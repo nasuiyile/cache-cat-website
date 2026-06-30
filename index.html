@@ -1,11 +1,363 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="Cache-Cat — a high-performance key-value cache built on the Raft consensus protocol, delivering strong consistency with zero data loss and cache-grade speed." />
+<title>Cache-Cat · High-Performance Strongly-Consistent Cache</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-    hello cache-cat
+
+<!-- ============ NAV ============ -->
+<header class="nav" id="nav">
+  <div class="nav-inner">
+    <a class="brand" href="#hero" aria-label="Cache-Cat home">
+      <span class="brand-mark">🐱</span>
+      <span class="brand-text">Cache-Cat</span>
+    </a>
+
+    <nav class="nav-links" id="navLinks">
+      <a href="#features" data-i18n="nav.features">Features</a>
+      <a href="#usecases" data-i18n="nav.usecases">Use Cases</a>
+      <a href="#consistency" data-i18n="nav.consistency">Consistency</a>
+      <a href="#architecture" data-i18n="nav.architecture">Architecture</a>
+      <a href="#faq" data-i18n="nav.faq">FAQ</a>
+    </nav>
+
+    <div class="nav-actions">
+      <button class="lang-toggle" id="langToggle" aria-label="Switch language">
+        <span data-lang-label="en">中文</span>
+        <span data-lang-label="zh" hidden>EN</span>
+      </button>
+      <a class="btn btn-ghost gh-link" href="https://github.com/nasuiyile/cache-cat" target="_blank" rel="noopener">
+        <svg viewBox="0 0 16 16" width="18" height="18" aria-hidden="true" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        <span>GitHub</span>
+      </a>
+      <button class="nav-burger" id="navBurger" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="hero">
+  <div class="hero-glow"></div>
+  <div class="container hero-inner">
+    <div class="badge" data-i18n="hero.badge">⚡ Raft-backed · Zero data loss</div>
+    <h1 class="hero-title">
+      <span data-i18n="hero.title1">The cache that</span>
+      <span class="grad" data-i18n="hero.title2">never loses your data</span>
+    </h1>
+    <p class="hero-sub" data-i18n="hero.sub">
+      Cache-Cat is a high-performance key-value cache built on the Raft consensus protocol — pairing
+      cache-grade read speed with the strong consistency and high availability of a distributed database.
+    </p>
+    <div class="hero-cta">
+      <a class="btn btn-primary" href="https://github.com/nasuiyile/cache-cat" target="_blank" rel="noopener" data-i18n="hero.cta1">Get Started on GitHub</a>
+      <a class="btn btn-ghost" href="#features" data-i18n="hero.cta2">Explore Features ↓</a>
+    </div>
+
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="stat-num"><span class="count" data-target="500">0</span>k<span class="unit">/s</span></div>
+        <div class="stat-label" data-i18n="hero.stat1">Write throughput</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num"><span class="count" data-target="100">0</span>%</div>
+        <div class="stat-label" data-i18n="hero.stat2">Committed-data durability</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">ms</div>
+        <div class="stat-label" data-i18n="hero.stat3">Log commit latency</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">RESP</div>
+        <div class="stat-label" data-i18n="hero.stat4">Redis-compatible protocol</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TRUST / INTRO ============ -->
+<section class="intro container">
+  <p class="intro-lead" data-i18n="intro.lead">
+    For small and mid-sized teams who want high availability without a truck-load of middleware.
+    Cache-Cat unifies a key-value database, a configuration & service-discovery center, a distributed
+    cache, and a distributed lock — in a single binary.
+  </p>
+  <div class="vs-grid">
+    <div class="vs-card">
+      <h3 data-i18n="intro.vs1.t">vs. Redis / Memcached</h3>
+      <p data-i18n="intro.vs1.d">Redis clustering solves availability, not consistency — an acknowledged write can still be lost on failover. Cache-Cat guarantees committed data is never lost.</p>
+    </div>
+    <div class="vs-card">
+      <h3 data-i18n="intro.vs2.t">vs. etcd / ZooKeeper / Consul</h3>
+      <p data-i18n="intro.vs2.d">These consensus systems were never designed for caching. Cache-Cat adds LRU / TinyLFU eviction and max-memory limits — at roughly 500k writes/s vs TiKV's ~200k.</p>
+    </div>
+    <div class="vs-card">
+      <h3 data-i18n="intro.vs3.t">vs. TiKV</h3>
+      <p data-i18n="intro.vs3.d">TiKV persists the state machine to disk. Cache-Cat keeps the state machine fully in memory for ultra-fast reads, while Raft logs guarantee durability.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FEATURES ============ -->
+<section class="section" id="features">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow" data-i18n="features.eyebrow">Why Cache-Cat</span>
+      <h2 data-i18n="features.title">Built for speed. Engineered for safety.</h2>
+      <p data-i18n="features.sub">Every design decision trades nothing away on the read path while guaranteeing your committed data survives any single-node failure.</p>
+    </div>
+
+    <div class="feature-grid">
+      <article class="feature-card">
+        <div class="f-icon">🛡️</div>
+        <h3 data-i18n="feat.1.t">Strong Consistency via Raft</h3>
+        <p data-i18n="feat.1.d">The cluster exposes the semantics of a single deterministic state machine. Once a write succeeds, every subsequent read sees the latest value.</p>
+      </article>
+      <article class="feature-card">
+        <div class="f-icon">🚀</div>
+        <h3 data-i18n="feat.2.t">Cache-Grade Performance</h3>
+        <p data-i18n="feat.2.d">~500k writes/s. Reads use lease-based reads to return within the lease period without extra consensus.</p>
+      </article>
+      <article class="feature-card">
+        <div class="f-icon">💾</div>
+        <h3 data-i18n="feat.3.t">Zero Data Loss</h3>
+        <p data-i18n="feat.3.d">Raft persists and replicates the operation log before acknowledging. Unlike Redis, an acked write can never be silently dropped on failover.</p>
+      </article>
+      <article class="feature-card">
+        <div class="f-icon">🧠</div>
+        <h3 data-i18n="feat.4.t">In-Memory State Machine</h3>
+        <p data-i18n="feat.4.d">Data lives entirely in memory (hash maps and optimized structures). The persisted Raft log plays the role of Redis AOF — durability without read-path disk I/O.</p>
+      </article>
+      <article class="feature-card">
+        <div class="f-icon">♻️</div>
+        <h3 data-i18n="feat.5.t">LRU & TinyLFU Eviction</h3>
+        <p data-i18n="feat.5.d">Built on a forked moka. Evictions are driven deterministically by the leader through consensus, plus max-memory limits — true cache semantics.</p>
+      </article>
+      <article class="feature-card">
+        <div class="f-icon">⏰</div>
+        <h3 data-i18n="feat.6.t">Deterministic Clock Consensus</h3>
+        <p data-i18n="feat.6.d">A self-developed logical-clock scheme makes TTL expiration deterministic across nodes — no clock-skew inconsistencies, even across leader switchovers.</p>
+      </article>
+      <article class="feature-card">
+        <div class="f-icon">📸</div>
+        <h3 data-i18n="feat.7.t">Concurrent Snapshots</h3>
+        <p data-i18n="feat.7.d">A CAS-based post-snapshot strategy avoids fork-induced STW pauses and copy-on-write memory blow-up, while supporting large values.</p>
+      </article>
+      <article class="feature-card">
+        <div class="f-icon">🔌</div>
+        <h3 data-i18n="feat.8.t">Redis-Compatible (RESP)</h3>
+        <p data-i18n="feat.8.d">Speaks the RESP protocol and Redis Sentinel commands, so existing Redis clients can drive failover with minimal changes.</p>
+      </article>
+      <article class="feature-card">
+        <div class="f-icon">🔒</div>
+        <h3 data-i18n="feat.9.t">TLS & mTLS</h3>
+        <p data-i18n="feat.9.d">Transport security across the cluster, including mutual TLS — keeping inter-node and client traffic encrypted.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ USE CASES ============ -->
+<section class="section section-alt" id="usecases">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow" data-i18n="uc.eyebrow">One binary, many roles</span>
+      <h2 data-i18n="uc.title">What you can build with Cache-Cat</h2>
+      <p data-i18n="uc.sub">Stop stacking middleware. Cache-Cat covers four common roles with a single, consistent system.</p>
+    </div>
+
+    <div class="usecase-grid">
+      <div class="usecase">
+        <div class="uc-num">01</div>
+        <h3 data-i18n="uc.1.t">Key-Value Database</h3>
+        <p data-i18n="uc.1.d">Like TiKV — store critical business data that must never be lost, backed by Raft replication.</p>
+      </div>
+      <div class="usecase">
+        <div class="uc-num">02</div>
+        <h3 data-i18n="uc.2.t">Service Discovery & Config</h3>
+        <p data-i18n="uc.2.d">A Consul / ZooKeeper-style registry and configuration center (with client integration).</p>
+      </div>
+      <div class="usecase">
+        <div class="uc-num">03</div>
+        <h3 data-i18n="uc.3.t">Distributed Cache</h3>
+        <p data-i18n="uc.3.d">A Redis / Dragonfly / Valkey-class cache. Reads rival modern in-memory caches; writes sustain 500k+ ops/s.</p>
+      </div>
+      <div class="usecase">
+        <div class="uc-num">04</div>
+        <h3 data-i18n="uc.4.t">Distributed Lock</h3>
+        <p data-i18n="uc.4.d">Stronger guarantees than Redis-based locks (including Redlock's well-known corner cases), closer to ZooKeeper / etcd.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONSISTENCY ============ -->
+<section class="section" id="consistency">
+  <div class="container split">
+    <div class="split-text">
+      <span class="eyebrow" data-i18n="con.eyebrow">Consistency model</span>
+      <h2 data-i18n="con.title">Strong consistency, by definition</h2>
+      <p data-i18n="con.p1">
+        Cache-Cat provides <strong>strong consistency</strong> through the Raft consensus protocol. The cluster
+        behaves as a single deterministic state machine — the moment a write succeeds, all subsequent reads observe it.
+      </p>
+      <ul class="check-list">
+        <li data-i18n="con.li1"><strong>Strong:</strong> once a write succeeds, every read returns the latest value.</li>
+        <li data-i18n="con.li2"><strong>Eventual:</strong> updates may take time to propagate before all readers observe them.</li>
+        <li data-i18n="con.li3">Reads from the leader use lease-based reads — no extra consensus round-trip.</li>
+        <li data-i18n="con.li4">Replica reads are intentionally rejected to preserve strong-consistency under the RESP protocol.</li>
+      </ul>
+    </div>
+    <div class="split-visual">
+      <div class="cluster-diagram" aria-hidden="true">
+        <div class="node leader">
+          <span class="node-tag" data-i18n="con.leader">LEADER</span>
+          <span class="node-dot"></span>
+        </div>
+        <div class="node-row">
+          <div class="node follower"><span class="node-tag" data-i18n="con.follower">FOLLOWER</span><span class="node-dot"></span></div>
+          <div class="node follower"><span class="node-tag" data-i18n="con.follower">FOLLOWER</span><span class="node-dot"></span></div>
+        </div>
+        <div class="diagram-caption" data-i18n="con.caption">Log replicated &amp; persisted to a majority before ack</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ARCHITECTURE / DEEP DIVE ============ -->
+<section class="section section-alt" id="architecture">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow" data-i18n="arch.eyebrow">Under the hood</span>
+      <h2 data-i18n="arch.title">Engineering deep dives</h2>
+      <p data-i18n="arch.sub">The hard problems solved so caching and consensus can coexist.</p>
+    </div>
+
+    <div class="deep-grid">
+      <details class="deep" open>
+        <summary data-i18n="arch.d1.t">⏰ Clock Consensus for Deterministic TTL</summary>
+        <div class="deep-body">
+          <p data-i18n="arch.d1.p1">Clock skew between leader and followers would make TTLs expire at different moments, breaking RMW commands like <code>SET NX</code>. Cache-Cat's self-developed Clock Consensus replaces the physical clock with a <strong>write logical clock</strong> derived as <code>max(write_logical_time, read_logical_time, physical_time)</code> and committed with each entry.</p>
+          <p data-i18n="arch.d1.p2">Expiration of the core cache map depends on this logical clock instead of any node's local time, so every node expires keys deterministically. Read requests generate a monotonically increasing read logical timestamp in memory — no extra consensus needed — and bounded clock offset (election time &gt; clock offset) keeps it monotonic across leader switchovers.</p>
+        </div>
+      </details>
+
+      <details class="deep">
+        <summary data-i18n="arch.d2.t">📸 Concurrent Snapshot Strategy</summary>
+        <div class="deep-body">
+          <p data-i18n="arch.d2.p1">Redis-style fork causes copy-on-write memory blow-up and brief STW pauses. Cache-Cat instead treats each value as an atomic unit and converts writes during a snapshot into <strong>CAS operations</strong> with per-value version numbers (a ZooKeeper-inspired, post-snapshot approach).</p>
+          <p data-i18n="arch.d2.p2">The snapshot thread iterates and streams data to disk while business threads keep serving. Recovery restores the full snapshot, then replays the versioned CAS queue. The logical clock is carried through the queue so expiration stays deterministic after recovery.</p>
+        </div>
+      </details>
+
+      <details class="deep">
+        <summary data-i18n="arch.d3.t">♻️ Deletion & Eviction Policy</summary>
+        <div class="deep-body">
+          <p data-i18n="arch.d3.p1">Both LRU and TinyLFU evictions are initiated by the leader through consensus to keep data iteration deterministic. Cache-Cat forked moka to read the tail of the LRU/LFU queues — the least-used data — and proposes its deletion.</p>
+          <p data-i18n="arch.d3.p2">Because reads run concurrently with consensus for performance, an entry being evicted may briefly still be readable, but it is ultimately deleted. Scheduled deletion is backed by a flurry-based concurrent map.</p>
+        </div>
+      </details>
+
+      <details class="deep">
+        <summary data-i18n="arch.d4.t">🧩 Data Structures & Concurrency</summary>
+        <div class="deep-body">
+          <p data-i18n="arch.d4.p1">Cache-Cat maps Redis-style types onto Rust structures: <code>String</code> via moka, <code>Hash</code>/<code>Set</code> via concurrent maps (flurry), <code>List</code> via linked lists / crossbeam <code>SegQueue</code>, and <code>Sorted Set</code> via <code>BTreeSet</code>.</p>
+          <p data-i18n="arch.d4.p2">Single-key ops are atomic under moka. A read/write-lock scheme is acquired only for the rare multi-key operations, so the common single-key path stays lock-light and fast.</p>
+        </div>
+      </details>
+
+      <details class="deep">
+        <summary data-i18n="arch.d5.t">🔌 Cluster Access via Sentinel</summary>
+        <div class="deep-body">
+          <p data-i18n="arch.d5.p1">Rather than proxies or Kubernetes operators, Cache-Cat implements Redis Sentinel-compatible commands directly on the default Redis port — every node answers sentinel queries, so standard clients handle failover.</p>
+          <p data-i18n="arch.d5.p2">Replica nodes reject reads by design: under the RESP protocol there's no per-request consistency flag (as etcd has), so allowing replica reads could return stale data after a failover.</p>
+        </div>
+      </details>
+
+      <details class="deep">
+        <summary data-i18n="arch.d6.t">🗺️ Roadmap</summary>
+        <div class="deep-body">
+          <ul class="road-list">
+            <li data-i18n="arch.r1">io_uring support</li>
+            <li data-i18n="arch.r2">Visual dashboard for live cluster status</li>
+            <li data-i18n="arch.r3">Compressed snapshots (per-string compression above a threshold)</li>
+            <li data-i18n="arch.r4">Importing existing Redis snapshot files</li>
+            <li data-i18n="arch.r5">mTLS</li>
+            <li data-i18n="arch.r6">Full benchmark suite at feature completeness</li>
+          </ul>
+        </div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section class="section" id="faq">
+  <div class="container narrow">
+    <div class="section-head">
+      <span class="eyebrow" data-i18n="faq.eyebrow">Questions</span>
+      <h2 data-i18n="faq.title">Frequently asked</h2>
+    </div>
+
+    <div class="faq-list">
+      <details class="faq">
+        <summary data-i18n="faq.q1">How is Cache-Cat different from TiKV?</summary>
+        <p data-i18n="faq.a1">TiKV persists its state machine to disk for durable storage. Cache-Cat keeps the state machine entirely in memory for ultra-fast reads, relying on replicated Raft logs for durability and strong consistency.</p>
+      </details>
+      <details class="faq">
+        <summary data-i18n="faq.q2">Can Redis really lose data, even in a cluster?</summary>
+        <p data-i18n="faq.a2">Yes. Neither Redis Cluster nor Sentinel uses a consensus protocol. The primary replies to the client before replicating; if it crashes before replication completes and a replica is promoted, the acknowledged write is permanently lost. Split-brain is also possible.</p>
+      </details>
+      <details class="faq">
+        <summary data-i18n="faq.q3">Doesn't Raft's disk + replication hurt cache performance?</summary>
+        <p data-i18n="faq.a3">Raft only requires the operation log to be persisted and replicated — not the state machine. The data structures stay in memory (like Redis AOF for the log). Reads need no extra disk access; only writes pay a small latency cost, in exchange for never losing committed data.</p>
+      </details>
+      <details class="faq">
+        <summary data-i18n="faq.q4">Why can't I read from replica nodes?</summary>
+        <p data-i18n="faq.a4">The RESP protocol has no per-request consistency flag (unlike etcd). Allowing replica reads could return stale data after a failover, so replicas reject reads to preserve strong consistency.</p>
+      </details>
+      <details class="faq">
+        <summary data-i18n="faq.q5">What's the throughput?</summary>
+        <p data-i18n="faq.a5">Around 500k writes/s (vs ~200k for TiKV under similar conditions), and 500k+ ops/s sustained. Most production workloads are ~95:5 read:write, and reads return within the lease period — so write latency rarely dominates.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CTA ============ -->
+<section class="cta-final">
+  <div class="container">
+    <h2 data-i18n="cta.title">Ready to never lose a write again?</h2>
+    <p data-i18n="cta.sub">Cache-Cat is open source under the Apache License 2.0.</p>
+    <a class="btn btn-primary btn-lg" href="https://github.com/nasuiyile/cache-cat" target="_blank" rel="noopener" data-i18n="cta.btn">Star it on GitHub →</a>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <span class="brand-mark">🐱</span>
+      <span class="brand-text">Cache-Cat</span>
+    </div>
+    <p class="footer-note" data-i18n="footer.note">High-performance, strongly-consistent caching on Raft. Includes code derived from coredb and rockraft, under the Apache License 2.0.</p>
+    <div class="footer-links">
+      <a href="https://github.com/nasuiyile/cache-cat" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://github.com/nasuiyile/cache-cat/blob/master/README.md" target="_blank" rel="noopener">README</a>
+      <a href="#hero" data-i18n="footer.top">Back to top ↑</a>
+    </div>
+  </div>
+</footer>
+
+<script src="i18n.js"></script>
+<script src="main.js"></script>
 </body>
 </html>
