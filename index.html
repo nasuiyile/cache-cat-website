@@ -16,7 +16,7 @@
 <header class="nav" id="nav">
   <div class="nav-inner">
     <a class="brand" href="#hero" aria-label="Cache-Cat home">
-      <span class="brand-mark">🐱</span>
+      <img class="brand-mark" src="./1.png" alt="Cache-Cat logo" width="28" height="28" />
       <span class="brand-text">Cache-Cat</span>
     </a>
 
@@ -24,7 +24,6 @@
       <a href="#features" data-i18n="nav.features">Features</a>
       <a href="#usecases" data-i18n="nav.usecases">Use Cases</a>
       <a href="#consistency" data-i18n="nav.consistency">Consistency</a>
-      <a href="#architecture" data-i18n="nav.architecture">Architecture</a>
       <a href="#faq" data-i18n="nav.faq">FAQ</a>
     </nav>
 
@@ -232,72 +231,6 @@
   </div>
 </section>
 
-<!-- ============ ARCHITECTURE / DEEP DIVE ============ -->
-<section class="section section-alt" id="architecture">
-  <div class="container">
-    <div class="section-head">
-      <span class="eyebrow" data-i18n="arch.eyebrow">Under the hood</span>
-      <h2 data-i18n="arch.title">Engineering deep dives</h2>
-      <p data-i18n="arch.sub">The hard problems solved so caching and consensus can coexist.</p>
-    </div>
-
-    <div class="deep-grid">
-      <details class="deep" open>
-        <summary data-i18n="arch.d1.t">⏰ Clock Consensus for Deterministic TTL</summary>
-        <div class="deep-body">
-          <p data-i18n="arch.d1.p1">Clock skew between leader and followers would make TTLs expire at different moments, breaking RMW commands like <code>SET NX</code>. Cache-Cat's self-developed Clock Consensus replaces the physical clock with a <strong>write logical clock</strong> derived as <code>max(write_logical_time, read_logical_time, physical_time)</code> and committed with each entry.</p>
-          <p data-i18n="arch.d1.p2">Expiration of the core cache map depends on this logical clock instead of any node's local time, so every node expires keys deterministically. Read requests generate a monotonically increasing read logical timestamp in memory — no extra consensus needed — and bounded clock offset (election time &gt; clock offset) keeps it monotonic across leader switchovers.</p>
-        </div>
-      </details>
-
-      <details class="deep">
-        <summary data-i18n="arch.d2.t">📸 Concurrent Snapshot Strategy</summary>
-        <div class="deep-body">
-          <p data-i18n="arch.d2.p1">Redis-style fork causes copy-on-write memory blow-up and brief STW pauses. Cache-Cat instead treats each value as an atomic unit and converts writes during a snapshot into <strong>CAS operations</strong> with per-value version numbers (a ZooKeeper-inspired, post-snapshot approach).</p>
-          <p data-i18n="arch.d2.p2">The snapshot thread iterates and streams data to disk while business threads keep serving. Recovery restores the full snapshot, then replays the versioned CAS queue. The logical clock is carried through the queue so expiration stays deterministic after recovery.</p>
-        </div>
-      </details>
-
-      <details class="deep">
-        <summary data-i18n="arch.d3.t">♻️ Deletion & Eviction Policy</summary>
-        <div class="deep-body">
-          <p data-i18n="arch.d3.p1">Both LRU and TinyLFU evictions are initiated by the leader through consensus to keep data iteration deterministic. Cache-Cat forked moka to read the tail of the LRU/LFU queues — the least-used data — and proposes its deletion.</p>
-          <p data-i18n="arch.d3.p2">Because reads run concurrently with consensus for performance, an entry being evicted may briefly still be readable, but it is ultimately deleted. Scheduled deletion is backed by a flurry-based concurrent map.</p>
-        </div>
-      </details>
-
-      <details class="deep">
-        <summary data-i18n="arch.d4.t">🧩 Data Structures & Concurrency</summary>
-        <div class="deep-body">
-          <p data-i18n="arch.d4.p1">Cache-Cat maps Redis-style types onto Rust structures: <code>String</code> via moka, <code>Hash</code>/<code>Set</code> via concurrent maps (flurry), <code>List</code> via linked lists / crossbeam <code>SegQueue</code>, and <code>Sorted Set</code> via <code>BTreeSet</code>.</p>
-          <p data-i18n="arch.d4.p2">Single-key ops are atomic under moka. A read/write-lock scheme is acquired only for the rare multi-key operations, so the common single-key path stays lock-light and fast.</p>
-        </div>
-      </details>
-
-      <details class="deep">
-        <summary data-i18n="arch.d5.t">🔌 Cluster Access via Sentinel</summary>
-        <div class="deep-body">
-          <p data-i18n="arch.d5.p1">Rather than proxies or Kubernetes operators, Cache-Cat implements Redis Sentinel-compatible commands directly on the default Redis port — every node answers sentinel queries, so standard clients handle failover.</p>
-          <p data-i18n="arch.d5.p2">Replica nodes reject reads by design: under the RESP protocol there's no per-request consistency flag (as etcd has), so allowing replica reads could return stale data after a failover.</p>
-        </div>
-      </details>
-
-      <details class="deep">
-        <summary data-i18n="arch.d6.t">🗺️ Roadmap</summary>
-        <div class="deep-body">
-          <ul class="road-list">
-            <li data-i18n="arch.r1">io_uring support</li>
-            <li data-i18n="arch.r2">Visual dashboard for live cluster status</li>
-            <li data-i18n="arch.r3">Compressed snapshots (per-string compression above a threshold)</li>
-            <li data-i18n="arch.r4">Importing existing Redis snapshot files</li>
-            <li data-i18n="arch.r5">mTLS</li>
-            <li data-i18n="arch.r6">Full benchmark suite at feature completeness</li>
-          </ul>
-        </div>
-      </details>
-    </div>
-  </div>
-</section>
 
 <!-- ============ FAQ ============ -->
 <section class="section" id="faq">
@@ -345,7 +278,7 @@
 <footer class="footer">
   <div class="container footer-inner">
     <div class="footer-brand">
-      <span class="brand-mark">🐱</span>
+      <img class="brand-mark" src="./1.png" alt="Cache-Cat logo" width="28" height="28" />
       <span class="brand-text">Cache-Cat</span>
     </div>
     <p class="footer-note" data-i18n="footer.note">High-performance, strongly-consistent caching on Raft. Includes code derived from coredb and rockraft, under the Apache License 2.0.</p>
@@ -359,5 +292,114 @@
 
 <script src="i18n.js"></script>
 <script src="main.js"></script>
+
+<style>
+  /* Tab 内容显示兜底：防止 details 已 open，但正文仍被旧 CSS 隐藏。 */
+  details.faq[open] > p {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    max-height: none !important;
+    height: auto !important;
+    overflow: visible !important;
+    pointer-events: auto !important;
+  }
+</style>
+
+<script>
+  (() => {
+    const TAB_DELAY_MS = 1;
+    const pendingTimers = new WeakMap();
+    const desiredStates = new WeakMap();
+    const tabs = document.querySelectorAll('details.faq');
+
+    function getContent(tab) {
+      return tab.querySelector(':scope > p');
+    }
+
+    function syncContent(tab) {
+      const content = getContent(tab);
+      const summary = tab.querySelector(':scope > summary');
+
+      if (summary) {
+        summary.setAttribute('aria-expanded', tab.open ? 'true' : 'false');
+      }
+
+      if (!content) return;
+
+      if (tab.open) {
+        // 强制解除可能由旧样式/旧动画遗留的隐藏状态。
+        content.hidden = false;
+        content.removeAttribute('aria-hidden');
+        content.style.setProperty('display', 'block', 'important');
+        content.style.setProperty('visibility', 'visible', 'important');
+        content.style.setProperty('opacity', '1', 'important');
+        content.style.setProperty('max-height', 'none', 'important');
+        content.style.setProperty('height', 'auto', 'important');
+        content.style.setProperty('overflow', 'visible', 'important');
+        content.style.setProperty('pointer-events', 'auto', 'important');
+      } else {
+        // 关闭时移除内联兜底，让 details 原生折叠负责隐藏。
+        content.style.removeProperty('display');
+        content.style.removeProperty('visibility');
+        content.style.removeProperty('opacity');
+        content.style.removeProperty('max-height');
+        content.style.removeProperty('height');
+        content.style.removeProperty('overflow');
+        content.style.removeProperty('pointer-events');
+      }
+    }
+
+    tabs.forEach((tab) => {
+      // 所有 tab 初始统一关闭。
+      tab.open = false;
+      desiredStates.set(tab, false);
+      syncContent(tab);
+
+      const summary = tab.querySelector(':scope > summary');
+      if (!summary) return;
+
+      summary.setAttribute('role', 'button');
+      summary.setAttribute('aria-expanded', 'false');
+
+      // capture=true：尽量先于旧的冒泡阶段点击脚本处理，避免双重切换。
+      summary.addEventListener('click', (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+
+        const oldTimer = pendingTimers.get(tab);
+        if (oldTimer) clearTimeout(oldTimer);
+
+        // 使用“目标状态”而不是直接读取 tab.open，修复快速连续点击时的状态竞争。
+        const currentDesired = desiredStates.has(tab)
+          ? desiredStates.get(tab)
+          : tab.open;
+        const shouldOpen = !currentDesired;
+        desiredStates.set(tab, shouldOpen);
+
+        const timer = setTimeout(() => {
+          tab.open = shouldOpen;
+          syncContent(tab);
+
+          // 下一帧再同步一次，覆盖旧动画/旧脚本在 toggle 后写入的隐藏样式。
+          requestAnimationFrame(() => syncContent(tab));
+
+          pendingTimers.delete(tab);
+        }, TAB_DELAY_MS);
+
+        pendingTimers.set(tab, timer);
+      }, true);
+
+      // 无论 open 是由本脚本、键盘操作还是其他脚本改变，都同步正文显示。
+      tab.addEventListener('toggle', () => {
+        desiredStates.set(tab, tab.open);
+        syncContent(tab);
+        if (tab.open) {
+          requestAnimationFrame(() => syncContent(tab));
+        }
+      });
+    });
+  })();
+</script>
 </body>
 </html>
